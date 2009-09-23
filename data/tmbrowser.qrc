@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>i18n/qt_ru.qm</file>
+        <file>images/noimage.jpg</file>
+        <file>i18n/i18n_ru.qm</file>
+        <file>images/NoImageBig.jpg</file>
+        <file>images/btn_26.png</file>
+        <file>images/btn_26_hover.png</file>
+        <file>images/btn_26_pressed.png</file>
+        <file>images/combobox_arrow.png</file>
+        <file>images/background_center_frame.png</file>
+        <file>images/arrow_down.png</file>
+        <file>images/arrow_up.png</file>
+        <file>images/_gear.png</file>
+        <file>images/_globe.png</file>
+        <file>images/_refresh.png</file>
+    </qresource>
+</RCC>

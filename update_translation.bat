@@ -1,0 +1,2 @@
+lupdate TMBrowser.pro
+pause

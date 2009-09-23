@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>650</width>
+    <height>505</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>650</width>
+    <height>505</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>650</width>
+    <height>505</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Template Monster Browser</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#MainWindow,#centralwidget { 
+background-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(247, 247, 247, 255), stop:1 rgba(215, 215, 215, 255));
+}
+QMenuBar {
+     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                       stop:0 #FEFEFE,stop:0.5 #EDEDED,stop:1 #DDDDDD);
+ }
+ QMenuBar::item{
+     background: transparent;    
+ }
+ QMenuBar::item:pressed {
+     background: #a8a8a8;
+	 border-radius: 2px;
+     color:white;
+ }
+
+ QMenu {
+     background-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(247, 247, 247, 255), stop:1 rgba(215, 215, 215, 255));
+     margin: 2px; /* some spacing around the menu */
+ }
+ QMenu::item{
+     padding: 2px 25px 2px 20px;
+     background: transparent;
+	 margin: 2px;
+ }
+ QMenu::item:selected {   
+	background:#335EA8;
+     color:white;
+ }
+
+ QMenu::separator {
+    background:#C2C1C4;
+     height: 1px;
+     margin-left: 1px;
+     margin-right: 1px;
+ }
+
+ QMenu::indicator {
+     width: 13px;
+     height: 13px;
+ }
+
+QToolButton, QPushButton, QComboBox, QLineEdit,QListView  {
+    border-image: url(:/images/btn_26.png) 4;
+    border-width: 4;
+    padding: 0px 6px;
+    font-size: 12px;
+}
+
+*{
+    color: black;
+}
+
+ QComboBox QAbstractItemView {
+    background-color:white;
+}
+
+ QComboBox::down-arrow {
+     image: url(:/images/combobox_arrow.png);
+ }
+
+QComboBox:drop-down
+{
+     subcontrol-origin: padding;
+     subcontrol-position: top right;
+     border-left-style: none; 
+     border-top-right-radius: 1px;
+     border-bottom-right-radius: 1px;
+}
+
+QToolButton:hover, QPushButton:hover, QComboBox:hover {
+    border-image: url(:/images/btn_26_hover.png) 4;
+}
+
+QToolButton:disabled, QPushButton:disabled, QComboBox::disabled {
+	color:gray;
+}
+
+QToolButton:pressed, QPushButton:pressed, QPushButton:checked{
+    border-image: url(:/images/btn_26_pressed.png) 4;
+}
+QScrollBar:vertical {
+      background: transparent;
+      width: 15px;
+      margin: 22px 0 22px 0;
+  }
+  QScrollBar::handle:vertical {
+      border-image: url(:/images/btn_26.png) 4;
+      border-width: 4;
+      min-height: 20px;
+  }
+  QScrollBar::add-line:vertical {
+     border-image: url(:/images/btn_26.png) 4;
+      border-width: 4;
+      height: 20px;
+      subcontrol-position: bottom;
+      subcontrol-origin: margin;
+  }
+
+  QScrollBar::sub-line:vertical {
+      border-image: url(:/images/btn_26.png) 4;
+      border-width: 4;
+      height: 20px;
+      subcontrol-position: top;
+      subcontrol-origin: margin;
+  }
+  QScrollBar::up-arrow:vertical{
+       image: url(:/images/arrow_up.png);
+  }
+ QScrollBar::down-arrow:vertical {
+       image: url(:/images/arrow_down.png);
+  }
+  QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+      background: none;
+  }
+</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QLineEdit" name="searchEdit">
+      <property name="maximumSize">
+       <size>
+        <width>190</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLabel" name="templateName">
+      <property name="minimumSize">
+       <size>
+        <width>430</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>20</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QComboBox" name="sortBox">
+      <property name="maximumSize">
+       <size>
+        <width>190</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1" rowspan="2">
+     <widget class="QLabel" name="screen">
+      <property name="minimumSize">
+       <size>
+        <width>430</width>
+        <height>380</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>430</width>
+        <height>380</height>
+       </size>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">#screen { 
+border-image: url(:/images/background_center_frame.png) 4;
+border-width: 4;
+}</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Sunken</enum>
+      </property>
+      <property name="midLineWidth">
+       <number>0</number>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="margin">
+       <number>15</number>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0" rowspan="2">
+     <widget class="QListView" name="templatesList">
+      <property name="minimumSize">
+       <size>
+        <width>190</width>
+        <height>350</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>190</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>-1</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>64</width>
+        <height>64</height>
+       </size>
+      </property>
+      <property name="spacing">
+       <number>5</number>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QToolButton" name="openButton">
+      <property name="minimumSize">
+       <size>
+        <width>430</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>Open template</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>650</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="action_Rescan"/>
+    <addaction name="action_Download_images"/>
+    <addaction name="separator"/>
+    <addaction name="action_Preferences"/>
+    <addaction name="separator"/>
+    <addaction name="action_Exit"/>
+   </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>?</string>
+    </property>
+    <addaction name="action_About"/>
+   </widget>
+   <addaction name="menu_File"/>
+   <addaction name="menu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="action_Rescan">
+   <property name="icon">
+    <iconset resource="../../../data/tmbrowser.qrc">
+     <normaloff>:/images/_refresh.png</normaloff>:/images/_refresh.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Rescan</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="action_Exit">
+   <property name="text">
+    <string>E&amp;xit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="action_Preferences">
+   <property name="icon">
+    <iconset resource="../../../data/tmbrowser.qrc">
+     <normaloff>:/images/_gear.png</normaloff>:/images/_gear.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Preferences</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="action_Download_images">
+   <property name="icon">
+    <iconset resource="../../../data/tmbrowser.qrc">
+     <normaloff>:/images/_globe.png</normaloff>:/images/_globe.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Download images</string>
+   </property>
+  </action>
+  <action name="action_About">
+   <property name="text">
+    <string>&amp;About...</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../../../data/tmbrowser.qrc"/>
+ </resources>
+ <connections/>
+</ui>
