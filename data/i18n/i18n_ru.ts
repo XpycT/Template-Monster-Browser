@@ -166,6 +166,10 @@ This may take a long time.</source>
         <source>&amp;About...</source>
         <translation>&amp;О программе...</translation>
     </message>
+    <message>
+        <source>Website</source>
+        <translation>Сайт</translation>
+    </message>
 </context>
 <context>
     <name>SettingsDialog</name>
