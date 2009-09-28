@@ -40,18 +40,15 @@ MainWindow::MainWindow()
     }
 
     thumb=qApp->applicationDirPath()+QDir::separator()+"images"+QDir::separator();
-    tmList = new QListWidget;
+    model= new QStandardItemModel(this);
+    proxyModel=new QSortFilterProxyModel(this);
+    proxyModel->setDynamicSortFilter(false);
     loadTemplates();
 
     sortBox->addItem(tr("All"));
     for(int i=0;i<26;i++)
-        sortBox->addItem(tr("%1%2").arg(i).arg("000"));
+        sortBox->addItem(tr("%1%2").arg(i).arg("000"));    
 
-    proxyModel=new QSortFilterProxyModel(this);
-    proxyModel->setDynamicSortFilter(true);
-    proxyModel->setSourceModel(tmList->model());
-
-    templatesList->setModel(proxyModel);
     connect(searchEdit,SIGNAL(textChanged(QString)),proxyModel,SLOT(setFilterWildcard(QString)));
     connect(templatesList,SIGNAL(clicked(QModelIndex)),this,SLOT(showScreen()));
 
@@ -72,7 +69,6 @@ void MainWindow::on_action_Download_images_triggered(){
        DownloadDialog downDlg(this);
        downDlg.append(urlList);
        if(downDlg.exec()==QDialog::Rejected){
-            tmList->clear();
             sortBox->setCurrentIndex(0);
             loadTemplates();
        }
@@ -153,6 +149,8 @@ void MainWindow::showScreen(){
     screen->setPixmap(QPixmap::fromImage(image));
 }
 void MainWindow::loadTemplates(QString where){
+    QStringList  itmList;
+    QStringList  imgList;
     QString thumbImage;    
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(qApp->applicationDirPath()+QDir::separator()+"templates.db");
@@ -175,18 +173,35 @@ void MainWindow::loadTemplates(QString where){
             }else{
                 thumbImage=":/images/noimage.jpg";
             }
-            new QListWidgetItem(QIcon(thumbImage),name, tmList);
+            //new QListWidgetItem(QIcon(thumbImage),name, tmList);
+            itmList << name;
+            imgList << thumbImage;
             qApp->processEvents();
-        }
+        }     
+
     }else{
           qDebug() << "Не могу получить данные:";
           qDebug() << sql.lastError().text();
     }
+    /////////////////////////////////////////////////    
+    model->clear();
+    model->setRowCount(itmList.size());
+    model->setColumnCount(1);
+    for (int i = 0; i < model->rowCount(); ++i) {
+        QModelIndex index = model->index(i, 0);
+        QString     str   = itmList.at(i);
+        QString     img   = imgList.at(i);
+        model->setData(index, str, Qt::DisplayRole);
+        //model->setData(index, "ToolTip for " + str, Qt::ToolTipRole);
+        model->setData(index, QIcon(img), Qt::DecorationRole);
+        qApp->processEvents();
+    }
+     proxyModel->setSourceModel(model);
+     templatesList->setModel(proxyModel);
+
 }
 
 bool MainWindow::rescan(){
-
-    tmList->clear();
     QDir dir(pathDir);
     QStringList filters;
     filters << "*.zip" << "*.rar" << "*.uha" << "*.7z";
@@ -279,14 +294,13 @@ bool MainWindow::rescan(){
         qDebug() <<sql.lastError().text();
         return false;
     }
-    progress.setValue(list.size());
+    progress.setValue(list.size());    
     return true;
 }
 
 void MainWindow::resortList(const QString &serial){
     //qDebug() << serial;
     QString tm;
-    tmList->clear();
     if(serial==tr("All")){
         loadTemplates();
     }else{
@@ -322,6 +336,7 @@ void MainWindow::on_action_Rescan_triggered(){
                                | QMessageBox::Cancel);
     if (res == QMessageBox::Ok)
         if(rescan()){
+            sortBox->setCurrentIndex(0);            
             loadTemplates();
             QMessageBox::information(this,qApp->applicationName(),
                                      tr("Database update successfuly"));            

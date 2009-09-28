@@ -6,6 +6,7 @@
 
 class QSettings;
 class QSqlDatabase;
+class QStandardItemModel;
 class QSortFilterProxyModel;
 class QListWidget;
 class MainWindow : public QMainWindow, public Ui::MainWindow
@@ -30,6 +31,7 @@ private:
     QSettings *m_settings;
     QListWidget *tmList;
     QSortFilterProxyModel *proxyModel;
+    QStandardItemModel *model;
     QStringList urlList;
 protected:
     virtual void closeEvent(QCloseEvent *event);
