@@ -300,6 +300,7 @@ bool MainWindow::rescan(){
 
 void MainWindow::resortList(const QString &serial){
     //qDebug() << serial;
+    searchEdit->clear();
     QString tm;
     if(serial==tr("All")){
         loadTemplates();
