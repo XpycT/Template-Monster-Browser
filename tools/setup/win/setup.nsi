@@ -1,7 +1,7 @@
 !define PRODUCT_NAME "Template Monster Browser"
-!define PRODUCT_VERSION "1.2.0.3"
+!define PRODUCT_VERSION "1.2.1.8"
 !define PRODUCT_PUBLISHER "XpycT & ALEXANDER"
-!define PRODUCT_WEB_SITE "www.torrents.ru"
+!define PRODUCT_WEB_SITE "http://code.google.com/p/template-monster-browser/"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
@@ -77,7 +77,7 @@ Var STARTMENU_FOLDER
 !insertmacro MUI_LANGUAGE "Russian"
 
 # Информация, помещаемая в свойства файла установки
-VIProductVersion "1.0.0.0" # Версия продукта
+VIProductVersion "${PRODUCT_VERSION}" # Версия продукта
 VIAddVersionKey /LANG=${LANG_RUSSIAN} ProductName "${PRODUCT_NAME}" # Название продукта
 VIAddVersionKey /LANG=${LANG_RUSSIAN} ProductVersion "${PRODUCT_VERSION}" # Версия продукта
 VIAddVersionKey /LANG=${LANG_RUSSIAN} CompanyName "${PRODUCT_PUBLISHER}" # Название компании
@@ -86,7 +86,7 @@ VIAddVersionKey /LANG=${LANG_RUSSIAN} FileVersion "${PRODUCT_VERSION}" # Версия 
 VIAddVersionKey /LANG=${LANG_RUSSIAN} FileDescription "Программа просмотра шаблонов от Template Monster" # Описание файла
 VIAddVersionKey /LANG=${LANG_RUSSIAN} LegalCopyright "Copyright © 2009, XpycT & ALEXANDER" # Авторские права
 
-OutFile TMBrowserSetup.exe # Имя конечного файла инсталлятора
+OutFile "TMBrowserSetup_${PRODUCT_VERSION}_win.exe" # Имя конечного файла инсталлятора
 CRCCheck on # Включение проверси контрольной суммы (включение)
 XPStyle on # Включение стиля XP (включено)
 BrandingText "${PRODUCT_NAME}" # Определение текста, который отображается на линии над кнопками
