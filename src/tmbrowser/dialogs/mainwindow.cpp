@@ -357,6 +357,5 @@ void MainWindow::closeEvent(QCloseEvent *event){
     QSqlDatabase db = QSqlDatabase::database();
     if (db.isOpen()) {
         db.close();
-        //qDebug() <<"Соединение с базой данных закрыто!";
         }
 }
