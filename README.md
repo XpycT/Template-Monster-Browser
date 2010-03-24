@@ -1,5 +1,5 @@
 #Template Monster Browser
-Сross-platform client for working with Template Monster
+Сross-platform client for working with Template Monster ([screenshot](http://wiki.github.com/XpycT/Template-Monster-Browser/ "screenshot"))
 
 ##Authors##
 
