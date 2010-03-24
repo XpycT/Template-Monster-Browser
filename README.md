@@ -1,5 +1,4 @@
-##Template Monster Browser##
-
+#Template Monster Browser
 Сross-platform client for working with Template Monster
 
 ##Authors##
