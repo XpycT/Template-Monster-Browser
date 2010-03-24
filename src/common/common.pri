@@ -23,7 +23,7 @@ CONFIG(debug, debug|release) {
     message(Release!)
     RCC_DIR = ../../build/$${TARGET}/release/rcc
     MOC_DIR = ../../build/$${TARGET}/release/moc
-    UI_DIR = ../../build/$${TARGET}/debug/ui
+    UI_DIR = ../../build/$${TARGET}/release/ui
     OBJECTS_DIR = ../../build/$${TARGET}/release/obj
 }
 contains(_RC_FILE, 1 ) {
