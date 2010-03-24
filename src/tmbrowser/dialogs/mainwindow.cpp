@@ -5,6 +5,7 @@
 #include "settingsdialog.h"
 #include "downloaddialog.h"
 
+
 MainWindow::MainWindow()
 {
     setupUi(this);
@@ -43,6 +44,10 @@ MainWindow::MainWindow()
     model= new QStandardItemModel(this);
     proxyModel=new QSortFilterProxyModel(this);
     proxyModel->setDynamicSortFilter(false);
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(qApp->applicationDirPath()+QDir::separator()+"templates.db");
+
     loadTemplates();
 
     sortBox->addItem(tr("All"));
@@ -79,14 +84,11 @@ void MainWindow::downloadImages(){
     QString id_folder;
     bool ok;
     urlList.clear();
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(qApp->applicationDirPath()+QDir::separator()+"templates.db");
-    //qDebug() << "Соединяюсь с базой данных...";
+    QSqlDatabase db = QSqlDatabase::database();    
     if (!db.open()) {
-        qDebug() << "Не могу соединиться:";
-        qDebug() << db.lastError().text();
+        qDebug() << "[ERR]:" << db.lastError().text();
     }
-    //qDebug() << "Соединение установлено!";
+    //qDebug() << "РЎРѕРµРґРёРЅРµРЅРёРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ!";
     QSqlQuery sql = QSqlQuery();
     sql.exec("SELECT name FROM templates");
     if ( sql.isActive() ) {
@@ -97,15 +99,15 @@ void MainWindow::downloadImages(){
                 urlList << QString("http://images.templatemonster.com/screenshots/%1/%2-m.jpg")
                         .arg(qRound(s/100)*100).arg(name);
             }
-            if(!QFile::exists(thumb+name+"-b.jpg")){
+            if(!QFile::exists(thumb+name+"-b.jpg") || (QFileInfo(thumb+name+"-b.jpg").size() == 169)){
                 urlList << QString("http://images.templatemonster.com/screenshots/%1/%2-b.jpg")
                         .arg(qRound(s/100)*100).arg(name);
             }
+            //qDebug() << (QFileInfo(thumb+name+"-b.jpg").size() == 169);
             qApp->processEvents();
         }
     }else{
-          qDebug() << "Не могу получить данные:";
-          qDebug() << sql.lastError().text();
+          qDebug() << "[ERR]:" << sql.lastError().text();
     }
 
 }
@@ -125,16 +127,26 @@ void MainWindow::on_openButton_clicked(){
         fName=pathDir+QDir::separator()+ind+".zip";
     }else if(QFile::exists(pathDir+QDir::separator()+ind+".rar")){
         fName=pathDir+QDir::separator()+ind+".rar";
+    }else if(QFile::exists(pathDir+QDir::separator()+ind+".7z")){
+        fName=pathDir+QDir::separator()+ind+".7z";
+    }else if(QFile::exists(pathDir+QDir::separator()+ind+".tar")){
+        fName=pathDir+QDir::separator()+ind+".tar";
+    }else if(QFile::exists(pathDir+QDir::separator()+ind+".tar.gz")){
+        fName=pathDir+QDir::separator()+ind+".tar.gz";
     }
 
-         QStringList arguments;         
-         arguments << "/c";
-         arguments << fName;
-         QProcess  *opnTmpl = new QProcess;
-         opnTmpl->start("cmd.exe",arguments);
-
+    QStringList arguments;
+    arguments << fName;
+    QProcess  *opnTmpl = new QProcess;
+#ifdef Q_WS_WIN
+    arguments << "/c";
+    opnTmpl->start("cmd.exe",arguments);
+#else
+    opnTmpl->start("file-roller",arguments);
+#endif
     qDebug() << fName;
 }
+
 void MainWindow::showScreen(){   
     QString ind=templatesList->currentIndex().data(0).toString();
     templateName->setText(tr("Template #%1").arg(ind));
@@ -152,14 +164,12 @@ void MainWindow::loadTemplates(QString where){
     QStringList  itmList;
     QStringList  imgList;
     QString thumbImage;    
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(qApp->applicationDirPath()+QDir::separator()+"templates.db");
-    //qDebug() << "Соединяюсь с базой данных...";
+    QSqlDatabase db = QSqlDatabase::database();
+
     if (!db.open()) {
-        qDebug() << "Не могу соединиться:";
-        qDebug() << db.lastError().text();
+        qDebug() << "[ERR]:" << db.lastError().text();
     }
-    //qDebug() << "Соединение установлено!";
+
     QSqlQuery sql = QSqlQuery();
     if(where.isEmpty())
         sql.exec("SELECT name FROM templates");
@@ -180,8 +190,7 @@ void MainWindow::loadTemplates(QString where){
         }     
 
     }else{
-          qDebug() << "Не могу получить данные:";
-          qDebug() << sql.lastError().text();
+          qDebug() << "[ERR]:" << sql.lastError().text();
     }
     /////////////////////////////////////////////////    
     model->clear();
@@ -201,43 +210,59 @@ void MainWindow::loadTemplates(QString where){
 
 }
 
-bool MainWindow::rescan(){
-    QDir dir(pathDir);
-    QStringList filters;
-    filters << "*.zip" << "*.rar" << "*.uha" << "*.7z";
-    dir.setNameFilters(filters);
-    dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
-    dir.setSorting(QDir::Name );
+QFileInfoList listFolder ( QString path ) {
+        QDir currentFolder( path );
 
-    QFileInfoList list = dir.entryInfoList();
+        QFileInfoList list;
+
+        currentFolder.setFilter( QDir::Dirs | QDir::Files | QDir::NoSymLinks );
+        currentFolder.setSorting( QDir::Name );
+
+        QFileInfoList folderitems( currentFolder.entryInfoList() );
+
+        foreach ( QFileInfo i, folderitems ) {
+                QString iname( i.fileName() );
+                if ( iname == "." || iname == ".." || iname.isEmpty() )
+                        continue;
+
+                if ( i.isDir() )
+                        list << listFolder( path+"/"+iname );
+
+                if (i.isFile()) {
+                    list << i;
+                    qDebug() << i.absoluteFilePath();
+                }
+        }
+        return list;
+}
+
+bool MainWindow::rescan(){
+
+    QFileInfoList list = listFolder(pathDir);
 
     QProgressDialog progress(tr("Scanning templates..."), tr("Abort"), 0, list.size(), this);
     progress.setWindowTitle(qApp->applicationName());
     progress.setWindowModality(Qt::WindowModal);
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::database();
     db.setDatabaseName(qApp->applicationDirPath()+QDir::separator()+"templates.db");
-    //qDebug() << "Соединяюсь с базой данных...";
+
     if (!db.open()) {
-        qDebug() << "Не могу соединиться:";
-        qDebug() << db.lastError().text();
+        qDebug() << "[ERR]:" << db.lastError().text();
         return false;
     }
 
-    //qDebug() << "Соединение установлено!";
     QSqlQuery sql = QSqlQuery();
 
         QStringList dbtables = db.tables(QSql::Tables);
 
         if (dbtables.contains("templates", Qt::CaseInsensitive)) {
-            //qDebug() <<"Таблица \"templates\" уже существует.";
             sql.exec("DROP TABLE templates");
 
             if ( sql.lastError().type() == QSqlError::NoError ) {
-               //qDebug() <<"Удалили таблицу \"templates\" ";
+                ;
             }else{
-              qDebug() <<"Не могу удалить таблицу \"templates\":";
-              qDebug() << sql.lastError().text();
+              qDebug() <<"[ERR]:" << sql.lastError().text();
               return false;
             }
         }
@@ -247,10 +272,9 @@ bool MainWindow::rescan(){
           "  name VARCHAR(250), "
           "  serial INT(6) ) ");
         if ( sql.lastError().type() == QSqlError::NoError ) {
-          //qDebug() << "Создали таблицу \"templates\".";
+            ;
         }else{
-          qDebug() << "Не могу создать таблицу \"templates\":";
-          qDebug() << sql.lastError().text();
+          qDebug() << "[ERR]:" << sql.lastError().text();
           return false;
         }
     QString serial;
@@ -281,8 +305,7 @@ bool MainWindow::rescan(){
                  }
 
                 if ( sql.lastError().type() != QSqlError::NoError ) {
-                    qDebug() <<"Не могу вставить новую запись:";
-                    qDebug() <<sql.lastError().text();
+                    qDebug() <<"[ERR]:" << sql.lastError().text();
                     return false;
                 }
                 qApp->processEvents();
@@ -290,16 +313,15 @@ bool MainWindow::rescan(){
          }
 
     }else{
-        qDebug() <<"Не могу подготовить запрос:";
-        qDebug() <<sql.lastError().text();
+        qDebug() <<"[ERR]:" << sql.lastError().text();
         return false;
     }
     progress.setValue(list.size());    
     return true;
 }
 
-void MainWindow::resortList(const QString &serial){
-    //qDebug() << serial;
+void MainWindow::resortList(const QString &serial){    
+
     searchEdit->clear();
     QString tm;
     if(serial==tr("All")){
@@ -346,7 +368,7 @@ void MainWindow::on_action_Rescan_triggered(){
 void MainWindow::on_action_About_triggered(){
     QMessageBox::about(this,QString("%1 - %2").arg(qApp->applicationName())
                        .arg(tr("About")),QString("<h2>%1 %2</h2>"
-                                            "Copyright © 2009 <b><a href='mailto:XpycT.TOP@gmail.com' style='text-decoration:none; color:#1a4d82;'>XpycT</a> & <a href='mailto:a.petrovskii@gmail.com' style='text-decoration:none; color:#1a4d82;'>ALEXANDER</a></b>. All rights reserved.<br /><br />"
+                                            "Copyright В© 2009 <b><a href='mailto:XpycT.TOP@gmail.com' style='text-decoration:none; color:#1a4d82;'>XpycT</a> & <a href='mailto:a.petrovskii@gmail.com' style='text-decoration:none; color:#1a4d82;'>ALEXANDER</a></b>. All rights reserved.<br /><br />"
                                             "%3<br /><b>Qt Open Source Edition %4</b><br />"
                                             "<br/><p>%5 : <b><a href='%6' style='text-decoration:none; color:#1a4d82;'>%6</a></b></p>")
                        .arg(qApp->applicationName()).arg(qApp->applicationVersion())
@@ -359,3 +381,5 @@ void MainWindow::closeEvent(QCloseEvent *event){
         db.close();
         }
 }
+
+

@@ -6,6 +6,6 @@
 #define TMBROWSER_NAME         "Template Monster Browser"
 #define TMBROWSER_ORGANIZATION "XpycT & AlEXANDER"
 #define TMBROWSER_DOMAIN       "http://code.google.com/p/template-monster-browser/"
-#define TMBROWSER_COPYRIGHT    "Copyright © 2009 XpycT & AlEXANDER"
+#define TMBROWSER_COPYRIGHT    "Copyright Â© 2009-2010 XpycT & AlEXANDER"
 
 #endif /*VERSION_H_*/

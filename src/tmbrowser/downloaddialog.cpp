@@ -6,6 +6,8 @@
 #include <QString>
 #include <QStringList>
 #include <QTimer>
+#include <QDir>
+#include <QDebug>
 
 DownloadDialog::DownloadDialog(QWidget *parent)
         :QDialog(parent), downloadedCount(0), totalCount(0)
@@ -45,7 +47,7 @@ void DownloadDialog::append(const QUrl &url)
 QString DownloadDialog::saveFileName(const QUrl &url)
 {
     QString path = url.path();
-    QString basename = QFileInfo(path).fileName();
+    QString basename = QFileInfo(path).fileName();    
 
     if (basename.isEmpty())
         basename = "download.failed";
@@ -79,7 +81,7 @@ void DownloadDialog::startNextDownload()
     QUrl url = downloadQueue.dequeue();
 
     QString filename = saveFileName(url);
-    output.setFileName(qApp->applicationDirPath()+"/images/"+filename);
+    output.setFileName(qApp->applicationDirPath()+QDir::separator()+"images"+QDir::separator()+filename);
     if (!output.open(QIODevice::WriteOnly)) {
         logEdit->append(tr("<font style='color:red;font-weight:bold'>Problem opening save file '%1' for download '%2': %3</font><br/>")
                         .arg(filename).arg(url.toEncoded().constData())
@@ -134,6 +136,7 @@ void DownloadDialog::downloadFinished()
         // download failed
         logEdit->append(tr("<font style='color:red;font-weight:bold;'>Failed: %1</font>.<br/>")
                         .arg(currentDownload->errorString()));
+        output.remove();
 
     } else {
         logEdit->append(tr("<font style='color:green;font-weight:bold;'>Succeeded</font>.<br/>"));

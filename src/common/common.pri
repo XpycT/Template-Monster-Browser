@@ -14,6 +14,7 @@ CONFIG(debug, debug|release) {
     message(Debug!)
     RCC_DIR = ../../build/$${TARGET}/debug/rcc
     MOC_DIR = ../../build/$${TARGET}/debug/moc
+    UI_DIR = ../../build/$${TARGET}/debug/ui
     OBJECTS_DIR = ../../build/$${TARGET}/debug/obj
 
     mac|unix: TARGET = $$join(TARGET,,,_debug)
@@ -22,6 +23,7 @@ CONFIG(debug, debug|release) {
     message(Release!)
     RCC_DIR = ../../build/$${TARGET}/release/rcc
     MOC_DIR = ../../build/$${TARGET}/release/moc
+    UI_DIR = ../../build/$${TARGET}/debug/ui
     OBJECTS_DIR = ../../build/$${TARGET}/release/obj
 }
 contains(_RC_FILE, 1 ) {

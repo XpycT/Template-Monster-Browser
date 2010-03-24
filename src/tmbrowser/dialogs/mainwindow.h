@@ -14,7 +14,7 @@ class MainWindow : public QMainWindow, public Ui::MainWindow
     Q_OBJECT
 public:
     MainWindow();
-private slots:
+private slots:   
     void on_action_Rescan_triggered();
     void on_action_Preferences_triggered();
     void on_action_Download_images_triggered();
